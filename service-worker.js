@@ -4,18 +4,18 @@ self.addEventListener('install', e => {
   e.waitUntil(
     caches.open('top-ten-cache').then(cache =>
       cache.addAll([
-        '/',
-        '/index.html',
-        '/style.css',
-        '/main.js',
-        '/ids.js',
-        '/loaders.js',
-        '/constants.js',
-        '/signal.js',
-        '/manifest.webmanifest',
-        '/icon-192.png',
-        '/icon-512.png',
-        '/logo-s.png',
+        './',
+        './index.html',
+        './style.css',
+        './main.js',
+        './ids.js',
+        './loaders.js',
+        './constants.js',
+        './signal.js',
+        './manifest.webmanifest',
+        './icon-192.png',
+        './icon-512.png',
+        './logo-s.png',
       ])
     )
   );
