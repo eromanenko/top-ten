@@ -13,21 +13,24 @@
 <body>
   <section class="app">
     <section id="settings-screen" class="screen settings-screen">
-      
-      <h6 class="title text-light">Standalone game</h6>
-      <div class="description">If you don't have number's cards and tokens. This game can be played offline. To install it, add it to your home screen.</div>
-      <div class="players" id="players">
-        <div id="player-list" class="player-list"></div>
-        <button class="btn" id="start-game-btn" disabled>Start</button>
-      </div>
-      <div class="add-player-form">
-        <input class="player-input" id="player-input" placeholder="Input name" />
-        <button class="btn" id="add-player-btn">Add</button>
-      </div>
-
-      <h6 class="title text-light">Tasks mode</h6>
-      <div class="description">If you don't have number's cards and tokens. You can just use tasks.</div>
-      <button class="btn" id="show-task-btn">Show task</button>
+      <fieldset>
+        <legend class="title text-light">Tasks only mode</legend>
+        <div class="description">If you have number cards and tokens. You can use tasks only.</div>
+        <button class="btn" id="show-task-btn">Show Task</button>
+      </fieldset>
+      <div class="title text-light">-- OR --</div>
+      <fieldset>
+        <legend class="title text-light">No components? No problem.</legend>
+        <div class="description">You can play this game using just your phone — no cards or tokens needed.</div>
+        <div class="players" id="players">
+          <div id="player-list" class="player-list"></div>
+          <button class="btn" id="start-game-btn" disabled>Start</button>
+        </div>
+        <div class="add-player-form">
+          <input class="player-input" id="player-input" placeholder="Enter name" />
+          <button class="btn" id="add-player-btn">Add</button>
+        </div>
+      </fieldset>
     </section>
 
     <section id="game-screen" class="screen">
@@ -36,30 +39,43 @@
         <button class="btn" id="rank-mode-btn">↕ Rank Players</button>
         <button class="btn" id="tasks-mode-btn">📜 Read Task</button>
         <button class="btn" id="next-btn">👨‍✈ Next Captain</button>
+        <button class="btn" id="new-game-btn">🎮 New game</button>
       </div>
 
-      <div id="players-content" class="game-content tab-content"></div>
-      <div id="ranking-content" class="game-content tab-content"></div>
+      <div id="players-wrap" class="screen game-content flex-column">
+        <div class="description">Click your name to see the level</div>
+        <div id="players-content" class="flex-row"></div>
+      </div>
+      <div id="ranking-wrap" class="screen game-content flex-column">
+        <div class="description">Click players by order</div>
+        <div id="ranking-content" class="flex-row"></div>
+      </div>
 
-      <div id="task-content" class="game-content tab-content">
-        <button class="btn" id="prev-task-btn">🢁</button>
+      <div id="task-content" class="game-content screen flex-column">
         <div id="speech-bubble" class="speech-bubble"></div>
-        <button class="btn" id="next-task-btn">🢃</button>
+        <div class="task-buttons flex-row">
+          <button class="btn" id="home-task-btn">⮌ Home</button>
+          <button class="btn" id="prev-task-btn">🢁 Previous</button>
+          <button class="btn" id="next-task-btn">🢃 Next</button>
+        </div>
+        
       </div>
 
       <div id="bottom-bar" class="bottom-bar">
-        <div class="text-light" id="tokens">Tokens: <span id="token-count"></span></div>        
+        <div class="text-light" id="tokens">Round: <span id="round-count"></span> | Tokens: <span id="token-count"></span></div>        
       </div>
+      <div id="result" class="result"></div>
     </section>
+
   </section>
   <section class="footer">
     <div class="gradient-bg"></div>
   </section>
   
   <template id="player-template">
-    <div class="player-item">
+    <button class="player-item">
       <span class="player-name"></span>
-    </div>
+    </button>
   </template>
 
   <script type="module" src="./main.js"></script>
