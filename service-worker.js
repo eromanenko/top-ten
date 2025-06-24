@@ -2,7 +2,7 @@ const CACHE_NAME = 'top-ten-cache-v1';
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open('top-ten-cache').then(cache =>
+    caches.open(CACHE_NAME).then(cache =>
       cache.addAll([
         './',
         './index.html',
