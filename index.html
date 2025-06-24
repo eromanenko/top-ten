@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title class="title">Top Ten Game</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png">
+  <meta name="theme-color" content="#ffffff">
+</head>
+<body>
+  <section class="app">
+    <section id="settings-screen" class="screen settings-screen">
+      
+      <h6 class="title text-light">Standalone game</h6>
+      <div class="description">If you don't have number's cards and tokens. This game can be played offline. To install it, add it to your home screen.</div>
+      <div class="players" id="players">
+        <div id="player-list" class="player-list"></div>
+        <button class="btn" id="start-game-btn" disabled>Start</button>
+      </div>
+      <div class="add-player-form">
+        <input class="player-input" id="player-input" placeholder="Input name" />
+        <button class="btn" id="add-player-btn">Add</button>
+      </div>
+
+      <h6 class="title text-light">Tasks mode</h6>
+      <div class="description">If you don't have number's cards and tokens. You can just use tasks.</div>
+      <button class="btn" id="show-task-btn">Show task</button>
+    </section>
+
+    <section id="game-screen" class="screen">
+      <div id="top-bar" class="top-bar">
+        <button class="btn" id="players-mode-btn">👥 See Players</button>
+        <button class="btn" id="rank-mode-btn">↕ Rank Players</button>
+        <button class="btn" id="tasks-mode-btn">📜 Read Task</button>
+        <button class="btn" id="next-btn">👨‍✈ Next Captain</button>
+      </div>
+
+      <div id="players-content" class="game-content tab-content"></div>
+      <div id="ranking-content" class="game-content tab-content"></div>
+
+      <div id="task-content" class="game-content tab-content">
+        <button class="btn" id="prev-task-btn">🢁</button>
+        <div id="speech-bubble" class="speech-bubble"></div>
+        <button class="btn" id="next-task-btn">🢃</button>
+      </div>
+
+      <div id="bottom-bar" class="bottom-bar">
+        <div class="text-light" id="tokens">Tokens: <span id="token-count"></span></div>        
+      </div>
+    </section>
+  </section>
+  <section class="footer">
+    <div class="gradient-bg"></div>
+  </section>
+  
+  <template id="player-template">
+    <div class="player-item">
+      <span class="player-name"></span>
+    </div>
+  </template>
+
+  <script type="module" src="./main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js');
+    }
+  </script>
+</body>
+</html>
