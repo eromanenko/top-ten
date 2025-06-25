@@ -17,6 +17,8 @@ const prevTaskBtn = document.getElementById('prev-task-btn');
 const nextTaskBtn = document.getElementById('next-task-btn');
 const homeTaskBtn = document.getElementById('home-task-btn');
 
+const footer = document.getElementById('footer');
+
 // Screen reactivity
 // 'settings-screen', 'players-screen', 'ranking-screen', 'task-screen', 'task-only-screen'
 const currentScreen = signal('settings-screen');
@@ -46,7 +48,6 @@ const currentTask = computed(() => tasks.get()[currentTaskIndex.get()] || 'No ta
 currentTask.bindTo('#speech-bubble');
 
 // Players reactivity
-const captainIndex = signal(0);
 const players = signal([]);
 const chosenPlayers = signal([]);
 const playersCount = computed(() => players.get().length, [players]);
@@ -72,9 +73,15 @@ players.bindList('#player-template', '#players-content', (el, player, i) => {
     el.querySelector('.player-name').textContent = `${player.name} (${ player.level })`;
     setTimeout(() => { el.querySelector('.player-name').textContent = `${player.name}` }, 1000);
   });
+  if (player.isActive) {
+    el.classList.add('active');
+  }
 });
 players.bindList('#player-template', '#ranking-content', (el, player, i, players) => {
   el.querySelector('.player-name').textContent = `${player.name}`;
+  if (player.isActive) {
+    el.classList.add('active');
+  }
   el.addEventListener('click', () => {
     const chosen = chosenPlayers.get();
     el.querySelector('.player-name').textContent = `${chosen.length + 1}. ${player.name} (${ player.level })`;
@@ -149,6 +156,9 @@ nextTaskBtn.addEventListener('click', () => {
 homeTaskBtn.addEventListener('click', () => {
   currentScreen.set('settings-screen');
 })
+footer.addEventListener('click', () => {
+  currentScreen.set('settings-screen');
+})
 
 playersModeBtn.addEventListener('click', () => {
   currentScreen.set('players-screen');
@@ -163,6 +173,7 @@ nextBtn.addEventListener('click', () => {
 });
 
 function initGame(players) {
+  nextCaptain();
   tokensLeft.set(players.length);
   round.set(1);
   chosenPlayers.set([]);
@@ -170,11 +181,18 @@ function initGame(players) {
 }
 
 function nextRound() {
-  captainIndex.set((captainIndex.get() + 1) % players.get().length);
+  nextCaptain();
   round.set(round.get() + 1);
   chosenPlayers.set([]);
   currentScreen.set('players-screen');
   setRandomIntensities();
+}
+
+function nextCaptain() {
+  const playersArr = players.get();
+  const currentCaptainIndex = playersArr.findIndex(({isActive}) => isActive); // -1 for first
+  const newIndex = (currentCaptainIndex + 1) % playersArr.length;
+  players.set(playersArr.map((player, index) => ({...player, isActive: index === newIndex})));
 }
 
 function setRandomIntensities() {

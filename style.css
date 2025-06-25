@@ -6,7 +6,7 @@
   --olivine-color: #9DB17C;
   --border-color: #2e4a4e;
 
-  --max-width: 500px;
+  --max-width: 560px;
 } /* https://coolors.co/046d68-4b3b40-9db17c-9cde9f-d1f5be */
 
 * {
@@ -38,7 +38,7 @@ body {
   background: var(--bg-color);
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .app {
@@ -69,6 +69,7 @@ fieldset {
   gap: 1rem;
   padding: 1rem;
   border-radius: 4px;
+  width: 100%;
 }
 
 legend {
