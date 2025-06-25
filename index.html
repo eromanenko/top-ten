@@ -5,14 +5,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title class="title">Top Ten Game</title>
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./styles/style.css" />
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="./icon-192.png">
   <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-  <section class="app">
+  <section class="app" id="app">
     <section id="settings-screen" class="screen settings-screen">
+      <fieldset>
+        <legend class="title text-light">Game version</legend>
+        <div class="flex-row">
+          <button class="btn" id="base-ver-btn">Base</button>
+          <button class="btn" id="adult-ver-btn">18+</button>
+        </div>
+      </fieldset>
       <fieldset>
         <legend class="title text-light">Tasks only mode</legend>
         <div class="description">If you have number cards and tokens. You can use tasks only.</div>
@@ -78,10 +85,10 @@
     </button>
   </template>
 
-  <script type="module" src="./main.js"></script>
+  <script type="module" src="./js/main.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./service-worker.js');
+      navigator.serviceWorker.register('./js/service-worker.js');
     }
   </script>
 </body>

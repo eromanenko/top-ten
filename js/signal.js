@@ -56,17 +56,18 @@ export function signal(initialValue) {
       update(value);
     },
 
-    bindToClass: (targets, className) => {
+    bindToClass: (targets, className, fn = val => val) => {
       const allElements = Array.isArray(targets) ? targets.flatMap(resolveElements) : resolveElements(targets);
       const update = (val) => {
+        const result = fn(val);
         allElements.forEach(el => {
           if (className) {
             // If className is provided, toggle it based on the value
-            el.classList.toggle(className, !!val);
-          } else if (typeof val === 'string') {
-            // If val is a string, add it as a class
+            el.classList.toggle(className, !!result);
+          } else if (typeof result === 'string') {
+            // If result is a string, add it as a class
             el.className = '';
-            el.classList.add(val);
+            el.classList.add(result);
           }
           
         });

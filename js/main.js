@@ -1,6 +1,7 @@
 import { signal, computed, fromPromise } from './signal.js';
-import { loadTasks } from './loaders.js';
+import { loadTasks, sheetUrl, loadTasksFromGoogleSheet } from './loaders.js';
 import { ROUND_MAX } from './constants.js';
+import { sheetId, apiKey } from './ids.js';
 
 const playerInput = document.getElementById('player-input');
 const addPlayerBtn = document.getElementById('add-player-btn');
@@ -16,6 +17,9 @@ const nextBtn = document.getElementById('next-btn');
 const prevTaskBtn = document.getElementById('prev-task-btn');
 const nextTaskBtn = document.getElementById('next-task-btn');
 const homeTaskBtn = document.getElementById('home-task-btn');
+
+const baseVerBtn = document.getElementById('base-ver-btn');
+const adultVerBtn = document.getElementById('adult-ver-btn');
 
 const footer = document.getElementById('footer');
 
@@ -39,13 +43,25 @@ isRankingScreen.bindTo('#rank-mode-btn', { attribute: 'disabled', booleanAttr: t
 isTaskScreen.bindTo('#tasks-mode-btn', { attribute: 'disabled', booleanAttr: true });
 
 // Tasks reactivity
-const tasks = fromPromise(() => loadTasks().then(tasks => tasks.toSorted(shuffleComparatorFactory())), {
+const currentVersion = signal('base'); // 'base', 'adult'
+const tasksBase = fromPromise(() => loadTasks(sheetUrl).then(tasks => tasks.toSorted(shuffleComparatorFactory())), {
   loading: ['Loading tasks...'],
   error: ['Failed to load tasks. Please try again.'],
 });
+const tasksAdult = fromPromise(() => loadTasksFromGoogleSheet({sheetId, apiKey, range: 'sh2!A2:A1000'}).then(tasks => tasks.toSorted(shuffleComparatorFactory())), {
+  loading: ['Loading tasks...'],
+  error: ['Failed to load tasks. Please try again.'],
+});
+const tasks = computed(() => {
+  if (currentVersion.get() === 'base') return tasksBase.get();
+  return tasksAdult.get();
+}, [currentVersion, tasksBase, tasksAdult])
 const currentTaskIndex = signal(0);
 const currentTask = computed(() => tasks.get()[currentTaskIndex.get()] || 'No tasks available.', [tasks, currentTaskIndex]);
 currentTask.bindTo('#speech-bubble');
+currentVersion.bindTo('#base-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 'base'});
+currentVersion.bindTo('#adult-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 'adult'});
+currentVersion.bindToClass('body', 'adult', (val) => val === 'adult');
 
 // Players reactivity
 const players = signal([]);
@@ -103,8 +119,20 @@ players.bindList('#player-template', '#ranking-content', (el, player, i, players
 // Tokens reactivity
 const round = signal(1);
 const tokensLeft = signal(0);
+const resultClass = computed(() => {
+  const playersCount = players.get().length;
+  const tokensCount = tokensLeft.get();
+  if (!playersCount || !isGameScreen.get()) return 'result-0';
+  const tokensSpent = playersCount - tokensCount;
+  if (playersCount === tokensCount) return 'result-1';
+  if (tokensSpent <= tokensCount) return 'result-2';
+  if (!!tokensCount) return 'result-3';
+  return 'result-4';
+}, [tokensLeft, players, isGameScreen]);
+resultClass.bindToClass('#app')
 round.bindTo('#round-count', {fn: (round) => `${round}/${ROUND_MAX}`});
 tokensLeft.bindTo('#token-count');
+
 
 const isAllPlayersChosen = computed(() => chosenPlayers.get().length === players.get().length, [chosenPlayers, players]);
 const isGameOverFailed = computed(() => players.get().length && tokensLeft.get() === 0, [tokensLeft, players]);
@@ -158,6 +186,16 @@ homeTaskBtn.addEventListener('click', () => {
 })
 footer.addEventListener('click', () => {
   currentScreen.set('settings-screen');
+})
+
+baseVerBtn.addEventListener('click', () => {
+  currentVersion.set('base');
+  currentTaskIndex.set(0);
+})
+
+adultVerBtn.addEventListener('click', () => {
+  currentVersion.set('adult');
+  currentTaskIndex.set(0);
 })
 
 playersModeBtn.addEventListener('click', () => {

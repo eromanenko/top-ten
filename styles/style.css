@@ -5,9 +5,15 @@
   --button-bg-color: #9CDE9F;
   --olivine-color: #9DB17C;
   --border-color: #2e4a4e;
+  --bottom-gradient: linear-gradient(90deg,rgba(0, 215, 17, 1) 0%, rgba(240, 251, 7, 1) 33%, rgba(255, 140, 20, 1) 66%, rgba(255, 4, 1, 1) 100%);
 
   --max-width: 560px;
 } /* https://coolors.co/046d68-4b3b40-9db17c-9cde9f-d1f5be */
+
+.adult {
+  --bg-color: black;
+  --bottom-gradient: linear-gradient(90deg,rgba(0, 196, 255, 1) 0%, rgba(255, 0, 131, 1) 100%);
+}
 
 * {
   box-sizing: border-box;
@@ -41,7 +47,7 @@ body {
   min-height: 100dvh;
 }
 
-.app {
+#app {
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
@@ -50,6 +56,22 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-position-x: center;
+  background-position-y: bottom;
+  background-size: 89px;
+  background-repeat: no-repeat;
+}
+.result-1 {
+  background-image: url(../assets/uni-s1.png);
+}
+.result-2 {
+  background-image: url(../assets/uni-s2.png);
+}
+.result-3 {
+  background-image: url(../assets/uni-s3.png);
+}
+.result-4 {
+  background-image: url(../assets/uni-s4.png);
 }
 
 .screen {
@@ -225,13 +247,13 @@ legend {
   transform: translate(-50%, -50%);
   width: 55px;
   height: 40px;
-  background: url('./logo-s.png') no-repeat center center;
+  background: url('../assets/logo-s.png') no-repeat center center;
   background-size: contain;
 }
 
 .gradient-bg {
   background: #00D711;
-  background: linear-gradient(90deg,rgba(0, 215, 17, 1) 0%, rgba(240, 251, 7, 1) 33%, rgba(255, 140, 20, 1) 66%, rgba(255, 4, 1, 1) 100%);
+  background: var(--bottom-gradient);
   height: 1rem;
   max-width: var(--max-width);
   margin: 0 auto;
