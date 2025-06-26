@@ -1,4 +1,4 @@
-const CACHE_NAME = 'top-ten-cache-v2';
+const CACHE_NAME = 'top-ten-cache-v3';
 
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -12,6 +12,7 @@ self.addEventListener('install', e => {
         './loaders.js',
         './constants.js',
         './signal.js',
+        './utils.js',
         '../manifest.webmanifest',
         '../icon-192.png',
         '../icon-512.png',

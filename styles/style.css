@@ -1,18 +1,29 @@
 :root {
-  --bg-color: #046D68;
+  --max-width: 560px;
   --dark-color: #4B3B40;
   --light-text-color: #D1F5BE;
-  --button-bg-color: #9CDE9F;
   --olivine-color: #9DB17C;
   --border-color: #2e4a4e;
-  --bottom-gradient: linear-gradient(90deg,rgba(0, 215, 17, 1) 0%, rgba(240, 251, 7, 1) 33%, rgba(255, 140, 20, 1) 66%, rgba(255, 4, 1, 1) 100%);
 
-  --max-width: 560px;
+  --bg-color: #046D68;
+  --legend-border-color: #D1F5BE;
+  --bottom-gradient: linear-gradient(90deg,rgba(0, 215, 17, 1) 0%, rgba(240, 251, 7, 1) 33%, rgba(255, 140, 20, 1) 66%, rgba(255, 4, 1, 1) 100%);
+  --button-bg-color: #9CDE9F;
+  --button-text-color: black;
+  --text-light: #D1F5BE;
+  --from-color: #56a900;
+  --to-color: #c2000c;
 } /* https://coolors.co/046d68-4b3b40-9db17c-9cde9f-d1f5be */
 
 .adult {
   --bg-color: black;
+  --legend-border-color: #4B3B40;
   --bottom-gradient: linear-gradient(90deg,rgba(0, 196, 255, 1) 0%, rgba(255, 0, 131, 1) 100%);
+  --button-bg-color: #4B3B40;
+  --button-text-color: #9DB17C;
+  --text-light: #9DB17C;
+  --from-color: #0096d4;
+  --to-color: #c4007a;
 }
 
 * {
@@ -82,9 +93,8 @@ body {
   display: none;
 }
 
-
 fieldset {
-  border: 2px solid var(--light-text-color);
+  border: 2px solid var(--legend-border-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -95,10 +105,11 @@ fieldset {
 }
 
 legend {
+  color: var(--title-color);
   text-align: center;
   font-size: 1.5rem;
   margin-top: 3rem;
-  border: 2px solid var(--light-text-color);
+  border: 2px solid var(--legend-border-color);
   padding: 0.5rem;
   border-radius: 4px;
 }
@@ -129,7 +140,7 @@ legend {
 }
 
 .text-light {
-  color: var(--light-text-color);
+  color: var(--text-light);
 }
 
 .description {
@@ -173,6 +184,7 @@ legend {
 
 .btn {
   background-color: var(--button-bg-color);
+  color: var(--button-text-color);
   border: 0;
   border-radius: 4px;
   padding: 0.5rem 1rem;
@@ -180,6 +192,9 @@ legend {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+.btn:disabled {
+  opacity: 0.5;
 }
 
 .player-input {
@@ -232,6 +247,15 @@ legend {
   border-bottom-color: #fff;
   transform: rotate(0deg);
   z-index: 1;
+}
+
+.from-color {
+  color: var(--from-color);
+  font-weight: 700;
+}
+.to-color {
+  color: var(--to-color);
+  font-weight: 700;
 }
 
 .footer {

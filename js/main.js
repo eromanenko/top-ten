@@ -2,6 +2,7 @@ import { signal, computed, fromPromise } from './signal.js';
 import { loadTasks, sheetUrl, loadTasksFromGoogleSheet } from './loaders.js';
 import { ROUND_MAX } from './constants.js';
 import { sheetId, apiKey } from './ids.js';
+import { shuffleComparatorFactory, colorizeLastFromTo } from './utils.js';
 
 const playerInput = document.getElementById('player-input');
 const addPlayerBtn = document.getElementById('add-player-btn');
@@ -58,7 +59,8 @@ const tasks = computed(() => {
 }, [currentVersion, tasksBase, tasksAdult])
 const currentTaskIndex = signal(0);
 const currentTask = computed(() => tasks.get()[currentTaskIndex.get()] || 'No tasks available.', [tasks, currentTaskIndex]);
-currentTask.bindTo('#speech-bubble');
+const formattedTask = computed(() => colorizeLastFromTo(currentTask.get()), [currentTask]);
+formattedTask.bindTo('#speech-bubble', {property: 'innerHTML'});
 currentVersion.bindTo('#base-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 'base'});
 currentVersion.bindTo('#adult-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 'adult'});
 currentVersion.bindToClass('body', 'adult', (val) => val === 'adult');
@@ -238,15 +240,6 @@ function setRandomIntensities() {
   players.set(players.get().map((p, i) => ({...p, level: levels[i]})));
 }
 
-function shuffleComparatorFactory() {
-  const sortKeys = new Map();
 
-  return (a, b) => {
-    if (!sortKeys.has(a)) sortKeys.set(a, Math.random());
-    if (!sortKeys.has(b)) sortKeys.set(b, Math.random());
-
-    return sortKeys.get(a) - sortKeys.get(b);
-  };
-}
 
 
