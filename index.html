@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title class="title">Top Ten Game</title>
+  <title class="title">Top Ten</title>
   <link rel="stylesheet" href="./styles/style.css" />
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="./icon-192.png">
@@ -14,62 +14,62 @@
   <section class="app" id="app">
     <section id="settings-screen" class="screen settings-screen">
       <fieldset>
-        <legend class="title text-light">Game version</legend>
+        <legend class="title text-light">Версия</legend>
         <div class="flex-row">
-          <button class="btn" id="base-ver-btn">Base</button>
+          <button class="btn" id="base-ver-btn">Базовая</button>
           <button class="btn" id="adult-ver-btn">18+</button>
         </div>
       </fieldset>
       <fieldset>
-        <legend class="title text-light">Tasks only mode</legend>
-        <div class="description">If you have number cards and tokens. You can use tasks only.</div>
-        <button class="btn" id="show-task-btn">Show Task</button>
+        <legend class="title text-light">Только задания</legend>
+        <div class="description">Если у вас есть карты с номерами и жетоны, вы можете использовать этот режим.</div>
+        <button class="btn" id="show-task-btn">Показать задание</button>
       </fieldset>
-      <div class="title text-light">-- OR --</div>
+      <div class="title text-light">-- ИЛИ --</div>
       <fieldset>
-        <legend class="title text-light">No components? No problem.</legend>
-        <div class="description">You can play this game using just your phone — no cards or tokens needed.</div>
+        <legend class="title text-light">Нет компонентов? Не проблема.</legend>
+        <div class="description">Вы можете играть в эту игру, используя только это приложение.</div>
         <div class="players" id="players">
           <div id="player-list" class="player-list"></div>
-          <button class="btn" id="start-game-btn" disabled>Start</button>
+          <button class="btn" id="start-game-btn" disabled>Старт</button>
         </div>
         <div class="add-player-form">
-          <input class="player-input" id="player-input" placeholder="Enter name" />
-          <button class="btn" id="add-player-btn">Add</button>
+          <input class="player-input" id="player-input" placeholder="Введите имя" />
+          <button class="btn" id="add-player-btn">Добавить</button>
         </div>
       </fieldset>
     </section>
 
     <section id="game-screen" class="screen">
       <div id="top-bar" class="top-bar">
-        <button class="btn" id="players-mode-btn">See Players</button>
-        <button class="btn" id="rank-mode-btn">Rank Players</button>
-        <button class="btn" id="tasks-mode-btn">Read Task</button>
-        <button class="btn" id="next-btn">Next Captain</button>
-        <button class="btn" id="new-game-btn">New game</button>
+        <button class="btn" id="players-mode-btn">Игроки</button>
+        <button class="btn" id="rank-mode-btn">Сортировать</button>
+        <button class="btn" id="tasks-mode-btn">Задание</button>
+        <button class="btn" id="next-btn">Следующий капитан</button>
+        <button class="btn" id="new-game-btn">Новая игра</button>
       </div>
 
       <div id="players-wrap" class="screen game-content flex-column">
-        <div class="description">Click your name to see the level</div>
+        <div class="description">Кликни на своем имени, чтобы посмотреть уровень интенсивности. Имя капитана выделено рамкой</div>
         <div id="players-content" class="flex-row"></div>
       </div>
       <div id="ranking-wrap" class="screen game-content flex-column">
-        <div class="description">Click players by order</div>
+        <div class="description">Кликай на игроках по возрастанию уровня интенсивности.</div>
         <div id="ranking-content" class="flex-row"></div>
       </div>
 
       <div id="task-content" class="game-content screen flex-column">
         <div id="speech-bubble" class="speech-bubble"></div>
         <div class="task-buttons flex-row">
-          <button class="btn" id="home-task-btn">↶ Home</button>
-          <button class="btn" id="prev-task-btn">⇐ Previous</button>
-          <button class="btn" id="next-task-btn">⇒ Next</button>
+          <button class="btn" id="home-task-btn">↶ Домой</button>
+          <button class="btn" id="prev-task-btn">⇐ Предыдущее</button>
+          <button class="btn" id="next-task-btn">⇒ Следующее</button>
         </div>
         
       </div>
 
       <div id="bottom-bar" class="bottom-bar">
-        <div class="text-light" id="tokens">Round: <span id="round-count"></span> | Tokens: <span id="token-count"></span></div>        
+        <div class="text-light" id="tokens">Раунд: <span id="round-count"></span> | Жетонов: <span id="token-count"></span></div>        
       </div>
       <div id="result" class="result"></div>
     </section>
