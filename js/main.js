@@ -183,7 +183,7 @@ nextTaskBtn.addEventListener('click', () => {
   currentTaskIndex.set((currentTaskIndex.get() + 1) % tasks.get().length);
 })
 
-homeTaskBtn.addEventListener('click', () => {
+homeTaskBtn?.addEventListener('click', () => {
   currentScreen.set('settings-screen');
 })
 footer.addEventListener('click', () => {
