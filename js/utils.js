@@ -35,21 +35,15 @@ export function colorizeLastFromTo(text) {
   );
 }
 
-export function colorizeLastFromTo2(text) {
-  const pattern = /от\s+(.+?)\s+(?:до|к)\s+(.+)/gi;
+export function loadPlayerNames() {
+  return JSON.parse(localStorage.getItem('saved-players') || '[]');
+}
 
-  const matches = [...text.matchAll(pattern)];
-  if (matches.length === 0) return text;
-
-  const last = matches[matches.length - 1];
-
-  const [full, from, to] = last;
-  const start = last.index;
-  const end = start + full.length;
-
-  return (
-    text.slice(0, start) +
-    `от <span class="from-color">${from}</span> до <span class="to-color">${to}</span>` +
-    text.slice(end)
-  );
+export function savePlayerName(name) {
+  const saved = JSON.parse(localStorage.getItem('saved-players') || '[]');
+  if (!saved.includes(name)) {
+    saved.push(name);
+    localStorage.setItem('saved-players', JSON.stringify(saved));
+    updatePlayerSuggestions(saved);
+  }
 }

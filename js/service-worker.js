@@ -13,6 +13,7 @@ self.addEventListener('install', e => {
         './constants.js',
         './signal.js',
         './utils.js',
+        './i18n.js',
         '../manifest.webmanifest',
         '../icon-192.png',
         '../icon-512.png',

@@ -2,7 +2,8 @@ import { signal, computed, fromPromise } from './signal.js';
 import { loadTasks, sheetUrl, loadTasksFromGoogleSheet } from './loaders.js';
 import { ROUND_MAX } from './constants.js';
 import { sheetId, apiKey } from './ids.js';
-import { shuffleComparatorFactory, colorizeLastFromTo } from './utils.js';
+import { shuffleComparatorFactory, colorizeLastFromTo, loadPlayerNames, savePlayerName } from './utils.js';
+import { DEFAULT_LANG, LANGS } from './i18n.js';
 
 const playerInput = document.getElementById('player-input');
 const addPlayerBtn = document.getElementById('add-player-btn');
@@ -21,6 +22,9 @@ const homeTaskBtn = document.getElementById('home-task-btn');
 
 const baseVerBtn = document.getElementById('base-ver-btn');
 const adultVerBtn = document.getElementById('adult-ver-btn');
+const langVerEn = document.getElementById('lang-ver-en');
+const langVerUa = document.getElementById('lang-ver-ua');
+const langVerRu = document.getElementById('lang-ver-ru');
 
 const footer = document.getElementById('footer');
 
@@ -45,6 +49,7 @@ isTaskScreen.bindTo('#tasks-mode-btn', { attribute: 'disabled', booleanAttr: tru
 
 // Tasks reactivity
 const currentVersion = signal('base'); // 'base', 'adult'
+const currentLang = signal(DEFAULT_LANG); // 'en', 'ua', 'ru'
 const tasksBase = fromPromise(() => loadTasks(sheetUrl).then(tasks => tasks.toSorted(shuffleComparatorFactory())), {
   loading: ['Loading tasks...'],
   error: ['Failed to load tasks. Please try again.'],
@@ -53,10 +58,7 @@ const tasksAdult = fromPromise(() => loadTasksFromGoogleSheet({sheetId, apiKey, 
   loading: ['Loading tasks...'],
   error: ['Failed to load tasks. Please try again.'],
 });
-const tasks = computed(() => {
-  if (currentVersion.get() === 'base') return tasksBase.get();
-  return tasksAdult.get();
-}, [currentVersion, tasksBase, tasksAdult])
+const tasks = computed(() => currentVersion.get() === 'base' ? tasksBase.get() : tasksAdult.get(), [currentVersion, tasksBase, tasksAdult])
 const currentTaskIndex = signal(0);
 const currentTask = computed(() => tasks.get()[currentTaskIndex.get()] || 'No tasks available.', [tasks, currentTaskIndex]);
 const formattedTask = computed(() => colorizeLastFromTo(currentTask.get()), [currentTask]);
@@ -68,6 +70,7 @@ currentVersion.bindToClass('body', 'adult', (val) => val === 'adult');
 // Players reactivity
 const players = signal([]);
 const chosenPlayers = signal([]);
+const playersSuggestions = signal([]);
 const playersCount = computed(() => players.get().length, [players]);
 const isHiddenPlayers = computed(() => playersCount.get() === 0, [playersCount]);
 const isDisabledStartGame = computed(() => playersCount.get() < 3, [playersCount]);
@@ -118,6 +121,10 @@ players.bindList('#player-template', '#ranking-content', (el, player, i, players
   });
 });
 
+playersSuggestions.bindList('#player-suggestion', '#saved-player-names', (el, name) => {
+  el.value = name;
+})
+
 // Tokens reactivity
 const round = signal(1);
 const tokensLeft = signal(0);
@@ -135,7 +142,6 @@ resultClass.bindToClass('#app')
 round.bindTo('#round-count', {fn: (round) => `${round}/${ROUND_MAX}`});
 tokensLeft.bindTo('#token-count');
 
-
 const isAllPlayersChosen = computed(() => chosenPlayers.get().length === players.get().length, [chosenPlayers, players]);
 const isGameOverFailed = computed(() => players.get().length && tokensLeft.get() === 0, [tokensLeft, players]);
 const isGameOverSuccess = computed(() => round.get() === ROUND_MAX && isAllPlayersChosen.get(), [round, isAllPlayersChosen]);
@@ -145,14 +151,46 @@ canNextRound.bindTo('#next-btn', { attribute: 'hidden', booleanAttr: true, fn: (
 isGameOver.bindTo('#new-game-btn', { attribute: 'hidden', booleanAttr: true, fn: (canNext) => !canNext });
 isGameOver.bindTo('#result', { attribute: 'hidden', booleanAttr: true, fn: (canNext) => !canNext });
 tokensLeft.bindTo('#result', {fn: (count) => count ? 'Success! )' : 'Failed ('});
-tokensLeft.bindToClass('#result', 'success')
+tokensLeft.bindToClass('#result', 'success');
+
+// Internationalization
+const labels = computed(() => LANGS[currentLang.get()], [currentLang]);
+currentLang.bindTo('#lang-ver-en', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 'en'});
+currentLang.bindTo('#lang-ver-ua', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 'ua'});
+currentLang.bindTo('#lang-ver-ru', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 'ru'});
+labels.bindTo('#ver', {fn: ({ver}) => ver});
+labels.bindTo('#base-ver-btn', {fn: ({base}) => base});
+labels.bindTo('#tasksOnly', {fn: ({tasksOnly}) => tasksOnly});
+labels.bindTo('#tasksOnlyDescription', {fn: ({tasksOnlyDescription}) => tasksOnlyDescription});
+labels.bindTo('#show-task-btn', {fn: ({taskOnlyButton}) => taskOnlyButton});
+labels.bindTo('#orDivider', {fn: ({orDivider}) => orDivider});
+labels.bindTo('#fullGame', {fn: ({fullGame}) => fullGame});
+labels.bindTo('#fullGameDescription', {fn: ({fullGameDescription}) => fullGameDescription});
+labels.bindTo('#start-game-btn', {fn: ({startButton}) => startButton});
+labels.bindTo('#player-input', {attribute: 'placeholder', fn: ({inputPlaceholder}) => inputPlaceholder});
+labels.bindTo('#add-player-btn', {fn: ({addButton}) => addButton});
+labels.bindTo('#players-mode-btn', {fn: ({seePlayers}) => seePlayers});
+labels.bindTo('#rank-mode-btn', {fn: ({rankPlayers}) => rankPlayers});
+labels.bindTo('#tasks-mode-btn', {fn: ({readTask}) => readTask});
+labels.bindTo('#next-btn', {fn: ({nextRound}) => nextRound});
+labels.bindTo('#new-game-btn', {fn: ({newGame}) => newGame});
+labels.bindTo('#playersDescription', {fn: ({playersDescription}) => playersDescription});
+labels.bindTo('#rankingDescription', {fn: ({rankingDescription}) => rankingDescription});
+labels.bindTo('#home-task-btn', {fn: ({homeButton}) => homeButton});
+labels.bindTo('#prev-task-btn', {fn: ({previousTask}) => previousTask});
+labels.bindTo('#next-task-btn', {fn: ({nextTask}) => nextTask});
+labels.bindTo('#round', {fn: ({round}) => round});
+labels.bindTo('#tokens-label', {fn: ({tokens}) => tokens});
 
 // Buttons
+playerInput.addEventListener('focus', function() { this.value = '' });
+
 addPlayerBtn.addEventListener('click', () => {
   const name = playerInput.value.trim();
   if (!name) return;
 
   players.set([...players.get(), { name }]);
+  savePlayerName(name);
 });
 
 startGameBtn.addEventListener('click', () => {
@@ -169,7 +207,7 @@ showTaskBtn.addEventListener('click', () => {
 
 newGameBtn.addEventListener('click', () => {
   currentScreen.set('settings-screen');
-})
+});
 
 tasksModeBtn.addEventListener('click', () => {
   currentScreen.set('task-screen');
@@ -177,28 +215,41 @@ tasksModeBtn.addEventListener('click', () => {
 
 prevTaskBtn.addEventListener('click', () => {
   currentTaskIndex.set((currentTaskIndex.get() - 1 + tasks.get().length) % tasks.get().length);
-})
+});
 
 nextTaskBtn.addEventListener('click', () => {
   currentTaskIndex.set((currentTaskIndex.get() + 1) % tasks.get().length);
-})
+});
 
 homeTaskBtn?.addEventListener('click', () => {
   currentScreen.set('settings-screen');
-})
+});
+
 footer.addEventListener('click', () => {
   currentScreen.set('settings-screen');
-})
+});
 
 baseVerBtn.addEventListener('click', () => {
   currentVersion.set('base');
   currentTaskIndex.set(0);
-})
+});
 
 adultVerBtn.addEventListener('click', () => {
   currentVersion.set('adult');
   currentTaskIndex.set(0);
-})
+});
+
+langVerEn.addEventListener('click', () => {
+  currentLang.set('en');
+});
+
+langVerUa.addEventListener('click', () => {
+  currentLang.set('ua');
+});
+
+langVerRu.addEventListener('click', () => {
+  currentLang.set('ru');
+});
 
 playersModeBtn.addEventListener('click', () => {
   currentScreen.set('players-screen');
@@ -211,6 +262,10 @@ rankingModeBtn.addEventListener('click', () => {
 nextBtn.addEventListener('click', () => {
   nextRound();
 });
+
+function onAppInit() {
+  playersSuggestions.set(loadPlayerNames());
+}
 
 function initGame(players) {
   nextCaptain();
@@ -240,6 +295,4 @@ function setRandomIntensities() {
   players.set(players.get().map((p, i) => ({...p, level: levels[i]})));
 }
 
-
-
-
+onAppInit();
