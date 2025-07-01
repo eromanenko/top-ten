@@ -44,6 +44,5 @@ export function savePlayerName(name) {
   if (!saved.includes(name)) {
     saved.push(name);
     localStorage.setItem('saved-players', JSON.stringify(saved));
-    updatePlayerSuggestions(saved);
   }
 }

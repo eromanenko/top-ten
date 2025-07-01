@@ -28,7 +28,7 @@ export const LANGS = {
     },
     ua: {
         ver: 'Версія',
-        base: 'Базова',
+        base: 'База',
         tasksOnly: 'Тільки завдання',
         tasksOnlyDescription: 'Якщо у вас є карти з номерами та жетони, ви можете використовувати цей режим.',
         taskOnlyButton: 'Показати завдання',
@@ -53,7 +53,7 @@ export const LANGS = {
     },
     ru: {
         ver: 'Версия',
-        base: 'Базовая',
+        base: 'База',
         tasksOnly: 'Только задания',
         tasksOnlyDescription: 'Если у вас есть карты с номерами и жетоны, вы можете использовать этот режим.',
         taskOnlyButton: 'Показать задание',

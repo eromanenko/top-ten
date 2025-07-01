@@ -1,5 +1,5 @@
-import { signal, computed, fromPromise } from './signal.js';
-import { loadTasks, sheetUrl, loadTasksFromGoogleSheet } from './loaders.js';
+import { signal, computed } from './signal.js';
+import { loadTasksFromGoogleSheet } from './loaders.js';
 import { ROUND_MAX } from './constants.js';
 import { sheetId, apiKey } from './ids.js';
 import { shuffleComparatorFactory, colorizeLastFromTo, loadPlayerNames, savePlayerName } from './utils.js';
@@ -48,24 +48,29 @@ isRankingScreen.bindTo('#rank-mode-btn', { attribute: 'disabled', booleanAttr: t
 isTaskScreen.bindTo('#tasks-mode-btn', { attribute: 'disabled', booleanAttr: true });
 
 // Tasks reactivity
-const currentVersion = signal('base'); // 'base', 'adult'
+const tasks = signal([]);
+const currentVersion = signal(null); // 1 - base, 2 - adult
 const currentLang = signal(DEFAULT_LANG); // 'en', 'ua', 'ru'
-const tasksBase = fromPromise(() => loadTasks(sheetUrl).then(tasks => tasks.toSorted(shuffleComparatorFactory())), {
-  loading: ['Loading tasks...'],
-  error: ['Failed to load tasks. Please try again.'],
-});
-const tasksAdult = fromPromise(() => loadTasksFromGoogleSheet({sheetId, apiKey, range: 'sh2!A2:A1000'}).then(tasks => tasks.toSorted(shuffleComparatorFactory())), {
-  loading: ['Loading tasks...'],
-  error: ['Failed to load tasks. Please try again.'],
-});
-const tasks = computed(() => currentVersion.get() === 'base' ? tasksBase.get() : tasksAdult.get(), [currentVersion, tasksBase, tasksAdult])
+const tasksRange = computed(() => `${ currentLang.get() }${ currentVersion.get() }!A1:A1000`, [currentVersion, currentLang]);
+tasksRange.subscribe((range) => {
+  loadTasksFromGoogleSheet({sheetId, apiKey, range}).then((tasksArr) => {tasks.set(tasksArr.toSorted(shuffleComparatorFactory()))});
+})
+// const tasksBase = fromPromise(() => loadTasks(sheetUrl).then(tasks => tasks.toSorted(shuffleComparatorFactory())), {
+//   loading: ['Loading tasks...'],
+//   error: ['Failed to load tasks. Please try again.'],
+// });
+// const tasksAdult = fromPromise(() => loadTasksFromGoogleSheet({sheetId, apiKey, range: 'sh2!A2:A1000'}).then(tasks => tasks.toSorted(shuffleComparatorFactory())), {
+//   loading: ['Loading tasks...'],
+//   error: ['Failed to load tasks. Please try again.'],
+// });
+//const tasks = computed(() => currentVersion.get() === 1 ? tasksBase.get() : tasksAdult.get(), [currentVersion, tasksBase, tasksAdult])
 const currentTaskIndex = signal(0);
 const currentTask = computed(() => tasks.get()[currentTaskIndex.get()] || 'No tasks available.', [tasks, currentTaskIndex]);
 const formattedTask = computed(() => colorizeLastFromTo(currentTask.get()), [currentTask]);
 formattedTask.bindTo('#speech-bubble', {property: 'innerHTML'});
-currentVersion.bindTo('#base-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 'base'});
-currentVersion.bindTo('#adult-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 'adult'});
-currentVersion.bindToClass('body', 'adult', (val) => val === 'adult');
+currentVersion.bindTo('#base-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 1});
+currentVersion.bindTo('#adult-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 2});
+currentVersion.bindToClass('body', 'adult', (val) => val === 2);
 
 // Players reactivity
 const players = signal([]);
@@ -230,12 +235,12 @@ footer.addEventListener('click', () => {
 });
 
 baseVerBtn.addEventListener('click', () => {
-  currentVersion.set('base');
+  currentVersion.set(1);
   currentTaskIndex.set(0);
 });
 
 adultVerBtn.addEventListener('click', () => {
-  currentVersion.set('adult');
+  currentVersion.set(2);
   currentTaskIndex.set(0);
 });
 
@@ -265,6 +270,7 @@ nextBtn.addEventListener('click', () => {
 
 function onAppInit() {
   playersSuggestions.set(loadPlayerNames());
+  currentVersion.set(1);
 }
 
 function initGame(players) {
