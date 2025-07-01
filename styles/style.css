@@ -112,6 +112,7 @@ legend {
   border: 2px solid var(--legend-border-color);
   padding: 0.5rem;
   border-radius: 4px;
+  white-space: pre-line; /* to have possibility to break line with \r\n */
 }
 
 .settings-screen {
@@ -136,7 +137,6 @@ legend {
 .title {
   text-align: center;
   font-size: 1.5rem;
-  margin-top: 3rem;
 }
 
 .text-light {
@@ -146,6 +146,7 @@ legend {
 .description {
   text-align: center;
   color: var(--olivine-color);
+  white-space: pre-line;
 }
 
 .players {

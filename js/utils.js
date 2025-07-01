@@ -9,29 +9,27 @@ export function shuffleComparatorFactory() {
   };
 }
 
-export function colorizeLastFromTo(text) {
-  const indexDo = text.toLowerCase().lastIndexOf(' до ');
-  const indexK = text.toLowerCase().lastIndexOf(' к ');
+export function colorizeLastFromTo(text, {toWords, fromWord}) {
   let toWord = '';
   let lastToIndex = -1;
-  if (indexK > indexDo) {
-    toWord = ' к ';
-    lastToIndex = indexK;
-  } else {
-    toWord = ' до '
-    lastToIndex = indexDo;
+  for (const toWrd of toWords) {
+    const newLastToIndex = text.toLowerCase().lastIndexOf(toWrd);
+    if (newLastToIndex > lastToIndex) {
+      toWord = toWrd;
+      lastToIndex = newLastToIndex;
+    }
   }
-  const afterTo = text.slice(lastToIndex + toWord.length);
+  const toText = text.slice(lastToIndex + toWord.length);
   const beforeTo = text.slice(0, lastToIndex);
 
-  const lastFromIndex = beforeTo.toLowerCase().lastIndexOf('от ');
+  const lastFromIndex = beforeTo.toLowerCase().lastIndexOf(fromWord);
   if (lastFromIndex === -1) return text;
 
   const beforeFrom = text.slice(0, lastFromIndex);
-  const fromText = text.slice(lastFromIndex + 3, lastToIndex).trim(); // +3 = 'от '.length
+  const fromText = text.slice(lastFromIndex + fromWord.length, lastToIndex).trim();
 
   return (
-    `${beforeFrom}от <span class="from-color">${fromText}</span>${toWord}<span class="to-color">${afterTo}</span>`
+    `${ beforeFrom }${ fromWord }<span class="from-color">${ fromText }</span>${ toWord }<span class="to-color">${ toText }</span>`
   );
 }
 

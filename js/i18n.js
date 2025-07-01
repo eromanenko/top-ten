@@ -5,10 +5,10 @@ export const LANGS = {
         ver: 'Game version',
         base: 'Base',
         tasksOnly: 'Tasks only mode',
-        tasksOnlyDescription: 'If you have number cards and tokens. You can use tasks only.',
+        tasksOnlyDescription: 'If you have number cards and tokens. \r\nYou can use tasks only.',
         taskOnlyButton: 'Show Task',
         orDivider: '-- OR --',
-        fullGame: 'No components? No problem.',
+        fullGame: 'No components? \r\nNo problem.',
         fullGameDescription: 'You can play this game using just your phone — no cards or tokens needed.',
         startButton: 'Start',
         inputPlaceholder: 'Enter name',
@@ -33,7 +33,7 @@ export const LANGS = {
         tasksOnlyDescription: 'Якщо у вас є карти з номерами та жетони, ви можете використовувати цей режим.',
         taskOnlyButton: 'Показати завдання',
         orDivider: '-- АБО --',
-        fullGame: 'Нема компонентів? Не проблема.',
+        fullGame: 'Нема компонентів? \r\nНе проблема.',
         fullGameDescription: 'Ви можете грати в цю гру, користуючись тільки цим застосунком.',
         startButton: 'Старт',
         inputPlaceholder: 'Введіть ім\'я',
@@ -58,7 +58,7 @@ export const LANGS = {
         tasksOnlyDescription: 'Если у вас есть карты с номерами и жетоны, вы можете использовать этот режим.',
         taskOnlyButton: 'Показать задание',
         orDivider: '-- ИЛИ --',
-        fullGame: 'Нет компонентов? Не проблема.',
+        fullGame: 'Нет компонентов? \r\nНе проблема.',
         fullGameDescription: 'Вы можете играть в эту игру, используя только это приложение.',
         startButton: 'Старт',
         inputPlaceholder: 'Введите имя',
@@ -75,5 +75,20 @@ export const LANGS = {
         nextTask: 'Следующее',
         round: 'Раунд',
         tokens: 'Жетонов',
+    }
+}
+
+export const SPLITTERS = {
+    ru: {
+        fromWord: 'от ',
+        toWords: [' до ', ' к ']
+    },
+    ua: {
+        fromWord: 'від ',
+        toWords: [' до ']
+    },
+    en: {
+        fromWord: 'from ',
+        toWords: [' to ']
     }
 }

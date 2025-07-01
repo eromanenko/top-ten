@@ -3,7 +3,7 @@ import { loadTasksFromGoogleSheet } from './loaders.js';
 import { ROUND_MAX } from './constants.js';
 import { sheetId, apiKey } from './ids.js';
 import { shuffleComparatorFactory, colorizeLastFromTo, loadPlayerNames, savePlayerName } from './utils.js';
-import { DEFAULT_LANG, LANGS } from './i18n.js';
+import { DEFAULT_LANG, LANGS, SPLITTERS } from './i18n.js';
 
 const playerInput = document.getElementById('player-input');
 const addPlayerBtn = document.getElementById('add-player-btn');
@@ -66,7 +66,7 @@ tasksRange.subscribe((range) => {
 //const tasks = computed(() => currentVersion.get() === 1 ? tasksBase.get() : tasksAdult.get(), [currentVersion, tasksBase, tasksAdult])
 const currentTaskIndex = signal(0);
 const currentTask = computed(() => tasks.get()[currentTaskIndex.get()] || 'No tasks available.', [tasks, currentTaskIndex]);
-const formattedTask = computed(() => colorizeLastFromTo(currentTask.get()), [currentTask]);
+const formattedTask = computed(() => colorizeLastFromTo(currentTask.get(), SPLITTERS[currentLang.get()]), [currentTask, currentLang]);
 formattedTask.bindTo('#speech-bubble', {property: 'innerHTML'});
 currentVersion.bindTo('#base-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 1});
 currentVersion.bindTo('#adult-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 2});
