@@ -52,11 +52,14 @@ const currentVersion = signal(null); // 1 - base, 2 - adult
 const currentLang = signal(DEFAULT_LANG); // 'en', 'ua', 'ru'
 const tasksRange = computed(() => ({language: currentLang.get(), version: currentVersion.get()}), [currentVersion, currentLang]);
 tasksRange.subscribe(({language, version}) => {
+  tasks.set([]);
   loadApi(language, version).then((tasksArr) => {tasks.set(tasksArr.toSorted(shuffleComparatorFactory()))});
 })
 const currentTaskIndex = signal(0);
 const currentTask = computed(() => tasks.get()[currentTaskIndex.get()] || 'No tasks available.', [tasks, currentTaskIndex]);
 const formattedTask = computed(() => colorizeLastFromTo(currentTask.get(), SPLITTERS[currentLang.get()]), [currentTask, currentLang]);
+const isDisabledShowTask = computed(() => !tasks.get().length, [tasks]);
+isDisabledShowTask.bindTo('#show-task-btn', { attribute: 'disabled', booleanAttr: true });
 formattedTask.bindTo('#speech-bubble', {property: 'innerHTML'});
 currentVersion.bindTo('#base-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 1});
 currentVersion.bindTo('#adult-ver-btn', {attribute: 'disabled', booleanAttr: true, fn: (val) => val === 2});
@@ -68,7 +71,7 @@ const chosenPlayers = signal([]);
 const playersSuggestions = signal([]);
 const playersCount = computed(() => players.get().length, [players]);
 const isHiddenPlayers = computed(() => playersCount.get() === 0, [playersCount]);
-const isDisabledStartGame = computed(() => playersCount.get() < 3, [playersCount]);
+const isDisabledStartGame = computed(() => playersCount.get() < 3 || !tasks.get().length, [playersCount, tasks]);
 players.bindTo('#player-input', { property: 'value', fn: (players) => {
   const name = `player ${players.length + 1}`
   return name;
@@ -106,13 +109,8 @@ players.bindList('#player-template', '#ranking-content', (el, player, i, players
       const newCount = tokensLeft.get() - 1;
       tokensLeft.set(newCount);
     }
-
     chosenPlayers.set([...chosen, player]);
     el.disabled = true;
-
-    if (chosen.length === players.length) {
-
-    }
   });
 });
 
