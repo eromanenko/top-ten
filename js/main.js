@@ -1,7 +1,6 @@
 import { signal, computed } from './signal.js';
-import { loadTasksFromGoogleSheet } from './loaders.js';
+import { loadApi } from './loaders.js';
 import { ROUND_MAX } from './constants.js';
-import { sheetId, apiKey } from './ids.js';
 import { shuffleComparatorFactory, colorizeLastFromTo, loadPlayerNames, savePlayerName } from './utils.js';
 import { DEFAULT_LANG, LANGS, SPLITTERS } from './i18n.js';
 
@@ -51,19 +50,10 @@ isTaskScreen.bindTo('#tasks-mode-btn', { attribute: 'disabled', booleanAttr: tru
 const tasks = signal([]);
 const currentVersion = signal(null); // 1 - base, 2 - adult
 const currentLang = signal(DEFAULT_LANG); // 'en', 'ua', 'ru'
-const tasksRange = computed(() => `${ currentLang.get() }${ currentVersion.get() }!A1:A1000`, [currentVersion, currentLang]);
-tasksRange.subscribe((range) => {
-  loadTasksFromGoogleSheet({sheetId, apiKey, range}).then((tasksArr) => {tasks.set(tasksArr.toSorted(shuffleComparatorFactory()))});
+const tasksRange = computed(() => ({language: currentLang.get(), version: currentVersion.get()}), [currentVersion, currentLang]);
+tasksRange.subscribe(({language, version}) => {
+  loadApi(language, version).then((tasksArr) => {tasks.set(tasksArr.toSorted(shuffleComparatorFactory()))});
 })
-// const tasksBase = fromPromise(() => loadTasks(sheetUrl).then(tasks => tasks.toSorted(shuffleComparatorFactory())), {
-//   loading: ['Loading tasks...'],
-//   error: ['Failed to load tasks. Please try again.'],
-// });
-// const tasksAdult = fromPromise(() => loadTasksFromGoogleSheet({sheetId, apiKey, range: 'sh2!A2:A1000'}).then(tasks => tasks.toSorted(shuffleComparatorFactory())), {
-//   loading: ['Loading tasks...'],
-//   error: ['Failed to load tasks. Please try again.'],
-// });
-//const tasks = computed(() => currentVersion.get() === 1 ? tasksBase.get() : tasksAdult.get(), [currentVersion, tasksBase, tasksAdult])
 const currentTaskIndex = signal(0);
 const currentTask = computed(() => tasks.get()[currentTaskIndex.get()] || 'No tasks available.', [tasks, currentTaskIndex]);
 const formattedTask = computed(() => colorizeLastFromTo(currentTask.get(), SPLITTERS[currentLang.get()]), [currentTask, currentLang]);
